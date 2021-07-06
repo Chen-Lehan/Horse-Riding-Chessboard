@@ -157,18 +157,51 @@ int Push_SqStack(SqStack* S, Plot p, int n) {
 	return OK;
 }
 
+void ClearLine() {
+	char c;
+	while (c = getchar()) {
+		if (c == '\n')
+			break;
+	}
+}
+
 main() {
 	int x, y, num;
 	int count = 0;
+	char print;
 	Plot step1;
 	SqStack* S = Init_SqStack();
+
 	printf("坐标的有效值为0至7\n");
 	printf("请输入x坐标：");
-	scanf("%d", &x);
+	while (scanf("%d", &x) != 1 || x < 0 || x > 7) {
+		ClearLine();
+		printf("请重新输入x坐标：");
+	}
 	printf("请输入y坐标：");
-	scanf("%d", &y);
-	printf("解的个数：");
-	scanf("%d", &num);
+	while (scanf("%d", &y) != 1 || y < 0 || y > 7) {
+		ClearLine();
+		printf("请重新输入y坐标：");
+	}
+	printf("请输入解的个数：");
+	while (1) {
+		if (1 != scanf("%d", &num)) {
+			ClearLine();
+			printf("请重新输入解的个数：");
+		}
+		else {
+			ClearLine();
+			if (num > 0)
+				break;
+			printf("请重新输入解的个数：");
+		}
+	}
+	do {
+		printf("是否打印全部(y/n)：");
+		print = getchar();
+		ClearLine();
+	} while (print != 'y' && print != 'n');
+
 	step1.n = 1;
 	step1.x = x;
 	step1.y = y;
@@ -176,7 +209,7 @@ main() {
 	while (S->top) {
 		if (S->base[S->top - 1].length == 0) {
 			StackElem data;
-			//data = Pop_SqStack(S);		With this line, the program can run faster by recursing less, but may miss some potential solution.
+			//data = Pop_SqStack(S);		With this line, the program can run faster by less traceback, but may miss some potential solutions.
 			while (S->base[S->top - 1].n == S->base[S->top - 2].length)
 				data = Pop_SqStack(S);
 			data = Pop_SqStack(S);
@@ -189,19 +222,19 @@ main() {
 			count++;
 			printf("FOUND %d\n", count);
 			int i, j;
-			for (i = 0; i < SIZE; i++) {
-				for (j = 0; j < SIZE; j++) {
-					printf("%3d", ChessBoard[i][j]);
+			if (print == 'y') {
+				for (i = 0; i < SIZE; i++) {
+					for (j = 0; j < SIZE; j++) {
+						printf("%3d", ChessBoard[i][j]);
+					}
+					printf("\n");
 				}
 				printf("\n");
 			}
-			printf("\n");
 		}
 		if (count == num) {
 			printf("共回溯%d次\n", recurse);
 			printf("输入任意字符后回车关闭此窗口\n");
-			getchar();
-			getchar();
 			exit(0);
 		}
 	}
