@@ -10,7 +10,7 @@ int recurse = 0;
 
 int HTry1[8] = { -2, -1,  1,  2,  2,  1, -1, -2 };
 int HTry2[8] = {  1,  2,  2,  1, -1, -2, -2, -1 };
-int ChessBoard[8][8] = {
+volatile int ChessBoard[8][8] = {
 	{0, 0, 0, 0, 0, 0, 0, 0},
 	{0, 0, 0, 0, 0, 0, 0, 0},
 	{0, 0, 0, 0, 0, 0, 0, 0},
@@ -19,7 +19,7 @@ int ChessBoard[8][8] = {
 	{0, 0, 0, 0, 0, 0, 0, 0},
 	{0, 0, 0, 0, 0, 0, 0, 0},
 	{0, 0, 0, 0, 0, 0, 0, 0} };
-int ChoiceNum[8][8] = {
+volatile int ChoiceNum[8][8] = {
 	{2, 3, 4, 4, 4, 4, 3, 2},
 	{3, 4, 6, 6, 6, 6, 4, 3},
 	{4, 6, 8, 8, 8, 8, 6, 4},
@@ -225,7 +225,7 @@ main() {
 			if (print == 'y') {
 				for (i = 0; i < SIZE; i++) {
 					for (j = 0; j < SIZE; j++) {
-						printf("%3d", ChessBoard[i][j]);
+						printf("%3d", ChessBoard[i][j] - ChessBoard[x][y] + 1);
 					}
 					printf("\n");
 				}
@@ -235,6 +235,7 @@ main() {
 		if (count == num) {
 			printf("共回溯%d次\n", recurse);
 			printf("输入任意字符后回车关闭此窗口\n");
+			getchar();
 			exit(0);
 		}
 	}
