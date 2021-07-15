@@ -135,12 +135,13 @@ int Push_SqStack(SqStack* S, Plot p, int n) {
 	StackElem data;
 	data.n = n;
 	data.p = p;
-	data.p.n = S->base[S->top - 1].p.n + 1;
+	if(S->top - 1)
+		data.p.n = S->base[S->top - 1].p.n + 1;
 
 	if (!(data.next = (Plot*)malloc(8 * sizeof(Plot))))
 		exit(ERROR);
 
-	ChessBoard[p.x][p.y] = data.p.n;
+	ChessBoard[p.x][p.y] = S->top + 1;
 	for (i = 0; i < 8; i++) {
 		if (InChessBoard(p.x + HTry1[i], p.y + HTry2[i]) == True) {
 			if (ChessBoard[p.x + HTry1[i]][p.y + HTry2[i]] == 0) {
@@ -202,14 +203,13 @@ main() {
 		ClearLine();
 	} while (print != 'y' && print != 'n');
 
-	step1.n = 1;
 	step1.x = x;
 	step1.y = y;
 	Push_SqStack(S, step1, 0);
+	StackElem data;
 	while (S->top) {
 		if (S->base[S->top - 1].length == 0) {
-			StackElem data;
-			//data = Pop_SqStack(S);		With this line, the program can run faster by less traceback, but may miss some potential solutions.
+//			data = Pop_SqStack(S);		//With this line, the program can run faster by less traceback, but may miss some potential solutions.
 			while (S->base[S->top - 1].n == S->base[S->top - 2].length)
 				data = Pop_SqStack(S);
 			data = Pop_SqStack(S);
@@ -225,7 +225,7 @@ main() {
 			if (print == 'y') {
 				for (i = 0; i < SIZE; i++) {
 					for (j = 0; j < SIZE; j++) {
-						printf("%3d", ChessBoard[i][j] - ChessBoard[x][y] + 1);
+						printf("%3d", ChessBoard[i][j]);
 					}
 					printf("\n");
 				}
